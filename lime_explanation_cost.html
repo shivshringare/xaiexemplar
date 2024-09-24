@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divFZG6CXAVQ4LA45U"></div>
+        <div class="lime top_div" id="top_divWSB5ZPGB031C4ML"></div>
         
         <script>
-        var top_div = d3.select('#top_divFZG6CXAVQ4LA45U').classed('lime top_div', true);
+        var top_div = d3.select('#top_divWSB5ZPGB031C4ML').classed('lime top_div', true);
         
         
                     var pp_div = top_div.append('div')
                                         .classed('lime predicted_value', true);
                     var pp_svg = pp_div.append('svg').style('width', '100%');
-                    var pp = new lime.PredictedValue(pp_svg, 2.8083406219281657, 1.5991458827977314, 3.609279731569);
+                    var pp = new lime.PredictedValue(pp_svg, 2.6410245425330796, 0.2782739999999997, 2.8977661361058593);
                     
         var exp_div;
             var exp = new lime.Explanation(["negative", "positive"]);
         
             exp_div = top_div.append('div').classed('lime explanation', true);
-            exp.show([["pAnalysis <= 0.92", -0.4952806564202179], ["pDrug <= 0.75", -0.12354517194765002], ["pAlarm <= 0.92", -0.11950124561993027]], 1, exp_div);
+            exp.show([["pAnalysis > 0.58", 1.3053843205066664], ["pAlarm <= 0.92", -0.18893030887838577], ["pDrug <= 0.77", -0.05354605586205501]], 1, exp_div);
             
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["pAnalysis", "0.90", -0.4952806564202179], ["pDrug", "0.70", -0.12354517194765002], ["pAlarm", "0.90", -0.11950124561993027]], 1, raw_div);
+            exp.show_raw_tabular([["pAnalysis", "0.90", 1.3053843205066664], ["pAlarm", "0.90", -0.18893030887838577], ["pDrug", "0.70", -0.05354605586205501]], 1, raw_div);
         
         </script>
         </body></html>
