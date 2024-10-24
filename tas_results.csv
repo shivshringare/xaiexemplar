@@ -1,0 +1,25 @@
+Hour,Profile Type,pVitalParamsPicked,Selected Drug,Drug Reliability,Drug Cost,Selected Analysis,Analysis Reliability,Analysis Cost,Selected Alarm,Alarm Reliability,Alarm Cost,Total Reliability,Total Cost
+0,young,0.9,Drug1,0.75,7,Analysis1,0.9,3,Alarm1,0.7,5,0.4725,15
+1,young,0.9,Drug2,0.8,6,Analysis2,0.85,2,Alarm2,0.6,4,0.40800000000000003,12
+2,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+3,young,0.9,Drug2,0.8,6,Analysis1,0.9,3,Alarm1,0.7,5,0.504,14
+4,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+5,young,0.9,Drug2,0.8,6,Analysis2,0.85,2,Alarm2,0.6,4,0.40800000000000003,12
+6,young,0.9,Drug1,0.75,7,Analysis1,0.9,3,Alarm1,0.7,5,0.4725,15
+7,young,0.9,Drug2,0.8,6,Analysis1,0.9,3,Alarm1,0.7,5,0.504,14
+8,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+9,young,0.9,Drug2,0.8,6,Analysis2,0.85,2,Alarm2,0.6,4,0.40800000000000003,12
+10,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+11,young,0.9,Drug1,0.75,7,Analysis1,0.9,3,Alarm1,0.7,5,0.4725,15
+12,young,0.9,Drug2,0.8,6,Analysis1,0.9,3,Alarm1,0.7,5,0.504,14
+13,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+14,young,0.9,Drug2,0.8,6,Analysis2,0.85,2,Alarm2,0.6,4,0.40800000000000003,12
+15,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+16,young,0.9,Drug1,0.75,7,Analysis1,0.9,3,Alarm1,0.7,5,0.4725,15
+17,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+18,young,0.9,Drug2,0.8,6,Analysis1,0.9,3,Alarm1,0.7,5,0.504,14
+19,young,0.9,Drug2,0.8,6,Analysis2,0.85,2,Alarm2,0.6,4,0.40800000000000003,12
+20,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+21,young,0.9,Drug1,0.75,7,Analysis1,0.9,3,Alarm1,0.7,5,0.4725,15
+22,young,0.9,Drug3,0.65,5,Analysis3,0.8,4,Alarm3,0.8,6,0.41600000000000004,15
+23,young,0.9,Drug2,0.8,6,Analysis2,0.85,2,Alarm2,0.6,4,0.40800000000000003,12
