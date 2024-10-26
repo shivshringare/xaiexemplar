@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
+import seaborn as sns
 
 HOURS = 24
 PROFILE_COUNT = 27
@@ -16,6 +17,11 @@ alarm_services = [
   {"name": "Alarm2", "reliability": 0.6, "cost": 4},
   {"name": "Alarm3", "reliability": 0.8, "cost": 6},
   {"name": "Alarm4", "reliability": 0.4, "cost": 3},
+  {"name": "Alarm5", "reliability": 0.5, "cost": 4},
+  {"name": "Alarm6", "reliability": 0.75, "cost": 5},
+  {"name": "Alarm7", "reliability": 0.65, "cost": 6},
+  {"name": "Alarm8", "reliability": 0.55, "cost": 2},
+  {"name": "Alarm9", "reliability": 0.9, "cost": 7}
 ]
 
 analysis_services = [
@@ -23,6 +29,11 @@ analysis_services = [
   {"name": "Analysis2", "reliability": 0.85, "cost": 2},
   {"name": "Analysis3", "reliability": 0.8, "cost": 4},
   {"name": "Analysis4", "reliability": 0.5, "cost": 2},
+  {"name": "Analysis5", "reliability": 0.6, "cost": 3},
+  {"name": "Analysis6", "reliability": 0.7, "cost": 5},
+  {"name": "Analysis7", "reliability": 0.55, "cost": 2},
+  {"name": "Analysis8", "reliability": 0.8, "cost": 6},
+  {"name": "Analysis9", "reliability": 0.95, "cost": 4}
 ]
 
 drug_services = [
@@ -30,6 +41,11 @@ drug_services = [
   {"name": "Drug2", "reliability": 0.8, "cost": 6},
   {"name": "Drug3", "reliability": 0.65, "cost": 5},
   {"name": "Drug4", "reliability": 0.4, "cost": 3},
+  {"name": "Drug5", "reliability": 0.5, "cost": 4},
+  {"name": "Drug6", "reliability": 0.85, "cost": 7},
+  {"name": "Drug7", "reliability": 0.9, "cost": 8},
+  {"name": "Drug8", "reliability": 0.7, "cost": 6},
+  {"name": "Drug9", "reliability": 0.6, "cost": 5},
 ]
 
 # Probability generators for profile attributes
@@ -216,7 +232,7 @@ elderly_profiles = [
 ]
 
 # run MAB on the user profiles
-selected_profiles, y_reliability, y_cost, selected_service_names = tas_workflow(young_profiles)
+selected_profiles, y_reliability, y_cost, selected_service_names = tas_workflow(elderly_profiles)
 
 detailed_service_data = {
   "Hour": [],
@@ -307,6 +323,74 @@ explainer = LimeTabularExplainer(
   ],
   discretize_continuous=True,
 )
+
+feature_names = [
+  "Drug Reliability", "Drug Cost",
+  "Analysis Reliability", "Analysis Cost",
+  "Alarm Reliability", "Alarm Cost"
+]
+
+explainer = LimeTabularExplainer(
+  features,
+  mode="regression",
+  feature_names=feature_names,
+  discretize_continuous=True,
+)
+
+# LIME feature impact heatmap
+# Initialize lists to store LIME contributions for each hour
+lime_contributions_reliability = []
+lime_contributions_cost = []
+
+# Loop through each hour and get LIME explanations
+for hour in range(HOURS):
+  exp_reliability = explainer.explain_instance(
+    features[hour], rf_reliability.predict, num_features=6
+  )
+  exp_cost = explainer.explain_instance(
+    features[hour], rf_cost.predict, num_features=6
+  )
+
+  # Store the LIME explanations as arrays
+  reliability_contributions = [contrib[1] for contrib in exp_reliability.as_list()]
+  cost_contributions = [contrib[1] for contrib in exp_cost.as_list()]
+
+  lime_contributions_reliability.append(reliability_contributions)
+  lime_contributions_cost.append(cost_contributions)
+
+# Convert to numpy arrays
+lime_contributions_reliability = np.array(lime_contributions_reliability)
+lime_contributions_cost = np.array(lime_contributions_cost)
+
+# Normalize the values for better visualization
+if lime_contributions_reliability.max() > 0:
+  lime_contributions_reliability /= lime_contributions_reliability.max()
+
+if lime_contributions_cost.max() > 0:
+  lime_contributions_cost /= lime_contributions_cost.max()
+
+# Create a combined heatmap
+combined_contributions = lime_contributions_reliability - lime_contributions_cost
+
+plt.figure(figsize=(14, 10))
+ax = sns.heatmap(
+  combined_contributions,
+  cmap="coolwarm_r",
+  xticklabels=[
+    "Drug Reliability", "Drug Cost",
+    "Analysis Reliability", "Analysis Cost",
+    "Alarm Reliability", "Alarm Cost"
+  ],
+  yticklabels=[f"Hour {i}" for i in range(HOURS)],
+  center=0,
+  annot=True
+)
+
+plt.title("LIME Explanations for Service Selections - Elderly Users")
+plt.xlabel("Features")
+plt.ylabel("Hours")
+plt.tight_layout()
+plt.show()
 
 # Generate explanations for each hour and combine into a single HTML file
 with open("tas_lime_explanations_all_hours.html", "w") as f:
