@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 import seaborn as sns
+from scipy.interpolate import make_interp_spline
 
 HOURS = 24
 PROFILE_COUNT = 27
@@ -13,39 +14,39 @@ COST_INCREASE_LIMIT = 5
 
 # Define concrete services with names
 alarm_services = [
-  {"name": "Alarm1", "reliability": 0.7, "cost": 5},
-  {"name": "Alarm2", "reliability": 0.6, "cost": 4},
-  {"name": "Alarm3", "reliability": 0.8, "cost": 6},
-  {"name": "Alarm4", "reliability": 0.4, "cost": 3},
-  {"name": "Alarm5", "reliability": 0.5, "cost": 4},
-  {"name": "Alarm6", "reliability": 0.75, "cost": 5},
-  {"name": "Alarm7", "reliability": 0.65, "cost": 6},
-  {"name": "Alarm8", "reliability": 0.55, "cost": 2},
-  {"name": "Alarm9", "reliability": 0.9, "cost": 7}
+  {"name": "A1", "reliability": 0.7, "cost": 5},
+  {"name": "A2", "reliability": 0.6, "cost": 4},
+  {"name": "A3", "reliability": 0.8, "cost": 6},
+  {"name": "A4", "reliability": 0.4, "cost": 3},
+  {"name": "A5", "reliability": 0.5, "cost": 4},
+  {"name": "A6", "reliability": 0.75, "cost": 5},
+  {"name": "A7", "reliability": 0.65, "cost": 6},
+  {"name": "A8", "reliability": 0.55, "cost": 2},
+  {"name": "A9", "reliability": 0.9, "cost": 7}
 ]
 
 analysis_services = [
-  {"name": "Analysis1", "reliability": 0.9, "cost": 3},
-  {"name": "Analysis2", "reliability": 0.85, "cost": 2},
-  {"name": "Analysis3", "reliability": 0.8, "cost": 4},
-  {"name": "Analysis4", "reliability": 0.5, "cost": 2},
-  {"name": "Analysis5", "reliability": 0.6, "cost": 3},
-  {"name": "Analysis6", "reliability": 0.7, "cost": 5},
-  {"name": "Analysis7", "reliability": 0.55, "cost": 2},
-  {"name": "Analysis8", "reliability": 0.8, "cost": 6},
-  {"name": "Analysis9", "reliability": 0.95, "cost": 4}
+  {"name": "M1", "reliability": 0.9, "cost": 3},
+  {"name": "M2", "reliability": 0.85, "cost": 2},
+  {"name": "M3", "reliability": 0.8, "cost": 4},
+  {"name": "M4", "reliability": 0.5, "cost": 2},
+  {"name": "M5", "reliability": 0.6, "cost": 3},
+  {"name": "M6", "reliability": 0.7, "cost": 5},
+  {"name": "M7", "reliability": 0.55, "cost": 2},
+  {"name": "M8", "reliability": 0.8, "cost": 6},
+  {"name": "M9", "reliability": 0.95, "cost": 4}
 ]
 
 drug_services = [
-  {"name": "Drug1", "reliability": 0.75, "cost": 7},
-  {"name": "Drug2", "reliability": 0.8, "cost": 6},
-  {"name": "Drug3", "reliability": 0.65, "cost": 5},
-  {"name": "Drug4", "reliability": 0.4, "cost": 3},
-  {"name": "Drug5", "reliability": 0.5, "cost": 4},
-  {"name": "Drug6", "reliability": 0.85, "cost": 7},
-  {"name": "Drug7", "reliability": 0.9, "cost": 8},
-  {"name": "Drug8", "reliability": 0.7, "cost": 6},
-  {"name": "Drug9", "reliability": 0.6, "cost": 5},
+  {"name": "D1", "reliability": 0.75, "cost": 7},
+  {"name": "D2", "reliability": 0.8, "cost": 6},
+  {"name": "D3", "reliability": 0.65, "cost": 5},
+  {"name": "D4", "reliability": 0.4, "cost": 3},
+  {"name": "D5", "reliability": 0.5, "cost": 4},
+  {"name": "D6", "reliability": 0.85, "cost": 7},
+  {"name": "D7", "reliability": 0.9, "cost": 8},
+  {"name": "D8", "reliability": 0.7, "cost": 6},
+  {"name": "D9", "reliability": 0.6, "cost": 5},
 ]
 
 # Probability generators for profile attributes
@@ -234,6 +235,16 @@ elderly_profiles = [
 # run MAB on the user profiles
 selected_profiles, y_reliability, y_cost, selected_service_names = tas_workflow(elderly_profiles)
 
+# Calculate average reliability over 24 hours
+average_reliability = np.mean(y_reliability)
+
+# Calculate average cost over 24 hours
+average_cost = np.mean(y_cost)
+
+# Print the results
+print(f"Average Reliability over 24 hours: {average_reliability:.2f}")
+print(f"Average Cost over 24 hours: {average_cost:.2f}")
+
 detailed_service_data = {
   "Hour": [],
   "Profile Type": [],
@@ -389,6 +400,58 @@ ax = sns.heatmap(
 plt.title("LIME Explanations for Service Selections - Elderly Users")
 plt.xlabel("Features")
 plt.ylabel("Hours")
+plt.tight_layout()
+plt.show()
+
+# Create an array for hours
+hours = np.arange(1, HOURS + 1)
+
+# Smoothing the curves using interpolation
+hours_smooth = np.linspace(hours.min(), hours.max(), 300)
+
+# Smoothing total reliability
+spl_reliability = make_interp_spline(hours, y_reliability, k=3)
+y_reliability_smooth = spl_reliability(hours_smooth)
+
+# Smoothing total cost
+spl_cost = make_interp_spline(hours, y_cost, k=3)
+y_cost_smooth = spl_cost(hours_smooth)
+
+# Plotting Total Reliability with Service Combinations
+plt.figure(figsize=(14, 6))
+plt.plot(hours_smooth, y_reliability_smooth, color='royalblue', linewidth=2.5, label='Total Reliability')
+plt.fill_between(hours_smooth, y_reliability_smooth, color='royalblue', alpha=0.2)
+plt.scatter(hours, y_reliability, color='navy', edgecolor='white', linewidth=0.8, s=100, zorder=2)
+
+# Annotate the service combinations on the plot
+for hour, reliability, combo in zip(hours, y_reliability, selected_service_names):
+  plt.text(hour, reliability + 0.03, f"({combo})", fontsize=8, rotation=0, ha='center', va='bottom', color='black')
+
+plt.xlabel('Hour', fontsize=14, labelpad=10)
+plt.ylabel('Total Reliability', fontsize=14, labelpad=10)
+plt.title('Total Reliability Over 24 Hours with Service Combinations', fontsize=16, pad=15, fontweight='bold')
+plt.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+plt.xticks(range(1, HOURS + 1))
+plt.legend(loc='upper left', fontsize=12)
+plt.tight_layout()
+plt.show()
+
+# Plotting Total Cost with Service Combinations
+plt.figure(figsize=(14, 6))
+plt.plot(hours_smooth, y_cost_smooth, color='crimson', linewidth=2.5, label='Total Cost')
+plt.fill_between(hours_smooth, y_cost_smooth, color='crimson', alpha=0.2)
+plt.scatter(hours, y_cost, color='darkred', edgecolor='white', linewidth=0.8, s=100, zorder=2)
+
+# Annotate the service combinations on the plot
+for hour, cost, combo in zip(hours, y_cost, selected_service_names):
+  plt.text(hour, cost + 0.1, f"({combo})", fontsize=8, rotation=0, ha='center', va='bottom', color='black')
+
+plt.xlabel('Hour', fontsize=14, labelpad=10)
+plt.ylabel('Total Cost', fontsize=14, labelpad=10)
+plt.title('Total Cost Over 24 Hours with Service Combinations', fontsize=16, pad=15, fontweight='bold')
+plt.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+plt.xticks(range(1, HOURS + 1))
+plt.legend(loc='upper left', fontsize=12)
 plt.tight_layout()
 plt.show()
 
