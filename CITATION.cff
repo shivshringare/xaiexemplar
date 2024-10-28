@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: Explaining Tele Assist System (TAS) workflow adaptations using LIME
+type: software
+year: 2024
+authors:
+  - given-names: Shiv
+    family-names: Shringare
+    affiliation: Auckland University of Technology
+repository-code: 'https://github.com/shivshringare/xaiexemplar'

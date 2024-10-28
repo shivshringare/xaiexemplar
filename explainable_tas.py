@@ -355,12 +355,8 @@ lime_contributions_cost = []
 
 # Loop through each hour and get LIME explanations
 for hour in range(HOURS):
-  exp_reliability = explainer.explain_instance(
-    features[hour], rf_reliability.predict, num_features=6
-  )
-  exp_cost = explainer.explain_instance(
-    features[hour], rf_cost.predict, num_features=6
-  )
+  exp_reliability = explainer.explain_instance(features[hour], rf_reliability.predict, num_features=6)
+  exp_cost = explainer.explain_instance(features[hour], rf_cost.predict, num_features=6)
 
   # Store the LIME explanations as arrays
   reliability_contributions = [contrib[1] for contrib in exp_reliability.as_list()]
@@ -457,21 +453,13 @@ plt.show()
 
 # Generate explanations for each hour and combine into a single HTML file
 with open("tas_lime_explanations_all_hours.html", "w") as f:
-  f.write(
-    "<html><head><title>LIME Explanations for Reliability and Cost</title></head><body>"
-  )
+  f.write("<html><head><title>LIME Explanations for Reliability and Cost</title></head><body>")
   f.write("<h1>LIME Explanations for Reliability and Cost Over All Hours</h1>")
 
   for hour in range(HOURS):
-    # Explain the prediction for total reliability
-    exp_reliability = explainer.explain_instance(
-      features[hour], rf_reliability.predict, num_features=6
-    )
-
-    # Explain the prediction for total cost
-    exp_cost = explainer.explain_instance(
-      features[hour], rf_cost.predict, num_features=6
-    )
+    # Explain the prediction for total reliability and cost
+    exp_reliability = explainer.explain_instance(features[hour], rf_reliability.predict, num_features=6)
+    exp_cost = explainer.explain_instance(features[hour], rf_cost.predict, num_features=6)
 
     # Add explanations to the HTML file
     f.write(f"<h2>Hour {hour}</h2>")
